@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +26,13 @@ public class UploadController {
 	@Autowired
 	FileUploadService fileUploadService;
 
+	static Logger logger = LoggerFactory.getLogger(UploadController.class);
 
 	/**
 	 * Upload single file using Spring Controller
 	 */
 	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-	public ResponseEntity uploadFileHandler(
-			@RequestParam("file") MultipartFile file) {
+	public ResponseEntity uploadFileHandler(@RequestParam("file") MultipartFile file) {
 
 		if (!file.isEmpty()) {
 			try {
@@ -43,18 +45,16 @@ public class UploadController {
 					dir.mkdirs();
 
 				// Create the file on server
-				File serverFile = new File(dir.getAbsolutePath()
-						+ File.separator + name);
-				BufferedOutputStream stream = new BufferedOutputStream(
-						new FileOutputStream(serverFile));
+				File serverFile = new File(dir.getAbsolutePath() + File.separator + name);
+				
+				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
 				stream.write(bytes);
 				stream.close();
-
-				
+				logger.info("Written file to {}", serverFile.getAbsolutePath());
 
 				return new ResponseEntity<>("{}", HttpStatus.OK);
 			} catch (Exception e) {
-				
+
 				return new ResponseEntity<>("{}", HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		} else {

@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Implementation-Title: data-uploader
+Implementation-Version: unspecified
+Implementation-Build-Time: 20180922.164919
+
